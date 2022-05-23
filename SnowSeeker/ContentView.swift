@@ -7,30 +7,36 @@
 
 import SwiftUI
 
-struct User: Identifiable {
-    var id = "g poole"
+struct UserView: View {
+    var body: some View {
+        //layout is decided on how its used; just groups the Text together but how its called decides layout
+        Group {
+            Text("Name: Garret")
+            Text("Country: US")
+            Text("Pets: Java")
+        }
+        .font(.title)
+    }
 }
 
 struct ContentView: View {
-    @State private var selectedUser: User? = nil
-    @State private var isShowingUser = false
+    @Environment(\.horizontalSizeClass) var sizeClass
+    //@State private var layoutVertically = false
+    
     var body: some View {
-       Text("Hello")
-            .onTapGesture {
-                selectedUser = User()
-                isShowingUser = true
+        Group {
+            //if limited in horizontal space
+            //does layout for us by device, by orientation
+            if sizeClass == .compact {
+                VStack(content: UserView.init)
+            } else {
+                HStack(content: UserView.init)
             }
-            //want sheet to be shown when selectedUser changes/has value inside
-            //resets user to nil once you dismiss the sheet
-//            .sheet(item: $selectedUser) { user in
-//                Text(user.id)
-//            }
-            //alert is prioritized over sheet if both occur at same time
-//            .alert("Welcome", isPresented: $isShowingUser, presenting: selectedUser) { user in
-//                Button(user.id) {}
-//            }
-        //passing in nothing to alert creates "OK" button to dimiss by default
-            .alert("Welcome", isPresented: $isShowingUser) { }
+        }
+        //group lets us attatch the modifiers
+//        .onTapGesture {
+//            layoutVertically.toggle()
+//        }
     }
 }
 
