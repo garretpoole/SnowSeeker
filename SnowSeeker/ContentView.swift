@@ -7,23 +7,30 @@
 
 import SwiftUI
 
+struct User: Identifiable {
+    var id = "g poole"
+}
+
 struct ContentView: View {
+    @State private var selectedUser: User? = nil
+    @State private var isShowingUser = false
     var body: some View {
-        //iPad and larger iPhones simulator has primary view on left from back arrow with menu to show
-        NavigationView {
-            NavigationLink {
-                //changes the secondary view
-                Text("New Secondary")
-            } label: {
-                //remains the primary view
-                //no current way to always keep this visible
-                Text("Hello World")
+       Text("Hello")
+            .onTapGesture {
+                selectedUser = User()
+                isShowingUser = true
             }
-            //Secondary view is first thing you see on larger screens and rpimary will slide in
-            Text("Secondary")
-            //makes the secondary slide in like the primary
-            Text("Tertiary")
-        }
+            //want sheet to be shown when selectedUser changes/has value inside
+            //resets user to nil once you dismiss the sheet
+//            .sheet(item: $selectedUser) { user in
+//                Text(user.id)
+//            }
+            //alert is prioritized over sheet if both occur at same time
+//            .alert("Welcome", isPresented: $isShowingUser, presenting: selectedUser) { user in
+//                Button(user.id) {}
+//            }
+        //passing in nothing to alert creates "OK" button to dimiss by default
+            .alert("Welcome", isPresented: $isShowingUser) { }
     }
 }
 
