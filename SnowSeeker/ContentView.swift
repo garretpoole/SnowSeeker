@@ -7,30 +7,9 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @State private var searchText = ""
-    let allNames = ["Scoob", "Shaggy", "Fred", "Velma"]
-    
+struct ContentView: View {    
     var body: some View {
-        NavigationView {
-            List(filteredNames, id: \.self) { name in
-                Text(name)
-            }
-            //must use with Nav View so knows where to put search bar
-            //whenever searchbox changes, view refreshes
-            .searchable(text: $searchText, prompt: "Look for something")
-            .navigationTitle("Searching")
-        }
-    }
-    
-    var filteredNames: [String] {
-        if searchText.isEmpty {
-            return allNames
-        } else {
-            return allNames.filter {
-                //search disregards capitalization
-                $0.localizedCaseInsensitiveContains(searchText) }
-        }
+        Text("Hello World")
     }
 }
 
