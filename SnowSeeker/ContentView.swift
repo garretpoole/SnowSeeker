@@ -7,36 +7,30 @@
 
 import SwiftUI
 
-struct UserView: View {
-    var body: some View {
-        //layout is decided on how its used; just groups the Text together but how its called decides layout
-        Group {
-            Text("Name: Garret")
-            Text("Country: US")
-            Text("Pets: Java")
-        }
-        .font(.title)
-    }
-}
-
 struct ContentView: View {
-    @Environment(\.horizontalSizeClass) var sizeClass
-    //@State private var layoutVertically = false
+    @State private var searchText = ""
+    let allNames = ["Scoob", "Shaggy", "Fred", "Velma"]
     
     var body: some View {
-        Group {
-            //if limited in horizontal space
-            //does layout for us by device, by orientation
-            if sizeClass == .compact {
-                VStack(content: UserView.init)
-            } else {
-                HStack(content: UserView.init)
+        NavigationView {
+            List(filteredNames, id: \.self) { name in
+                Text(name)
             }
+            //must use with Nav View so knows where to put search bar
+            //whenever searchbox changes, view refreshes
+            .searchable(text: $searchText, prompt: "Look for something")
+            .navigationTitle("Searching")
         }
-        //group lets us attatch the modifiers
-//        .onTapGesture {
-//            layoutVertically.toggle()
-//        }
+    }
+    
+    var filteredNames: [String] {
+        if searchText.isEmpty {
+            return allNames
+        } else {
+            return allNames.filter {
+                //search disregards capitalization
+                $0.localizedCaseInsensitiveContains(searchText) }
+        }
     }
 }
 
