@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+extension View {
+    @ViewBuilder func phoneOnlyNavigationView() -> some View {
+        //check if on a phone to keep layout consistent on 13 Pro Max
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            self.navigationViewStyle(.stack)
+        } else {
+            self
+        }
+    }
+}
+
 struct ContentView: View {
     let resorts: [Resort] = Bundle.main.decode("resorts.json")
     
@@ -35,7 +46,12 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Resorts")
+            
+            //for secondary view on larger screens
+            WelcomeView()
         }
+        //created modifier to make pro max layout consistent
+        //.phoneOnlyNavigationView()
     }
 }
 
