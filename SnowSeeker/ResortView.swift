@@ -12,6 +12,9 @@ struct ResortView: View {
     //decide layout for children detail views based on available space
     @Environment(\.horizontalSizeClass) var sizeClass
     @Environment(\.dynamicTypeSize) var typeSize
+    //creating alerts for icon buttons
+    @State private var selectedFacility: Facility?
+    @State private var showingFacility = false
     
     var body: some View {
         ScrollView {
@@ -41,8 +44,17 @@ struct ResortView: View {
                     Text("Facilities")
                         .font(.headline)
                     
-                    Text(resort.facilities, format: .list(type: .and))
-                        .padding(.vertical)
+                    HStack {
+                        ForEach(resort.facilityTypes) { facility in
+                            Button {
+                                selectedFacility = facility
+                                showingFacility = true
+                            } label: {
+                                facility.icon
+                                    .font(.title)
+                            }
+                        }
+                    }
                     
                 }
                 .padding(.horizontal)
@@ -50,6 +62,11 @@ struct ResortView: View {
         }
         .navigationTitle("\(resort.name), \(resort.country)")
         .navigationBarTitleDisplayMode(.inline)
+        
+        .alert(selectedFacility?.name ?? "More Info", isPresented: $showingFacility, presenting: selectedFacility) { _ in
+        } message: { facility in
+            Text(facility.description)
+        }
     }
 }
 
