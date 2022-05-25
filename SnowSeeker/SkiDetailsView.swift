@@ -11,6 +11,7 @@ struct SkiDetailsView: View {
     let resort: Resort
     
     var body: some View {
+        //use group to let parent decide layout
         Group {
             VStack {
                 Text("Elevation")
