@@ -25,6 +25,10 @@ struct ContentView: View {
     
     @StateObject var favorites = Favorites()
     
+    @State private var sorts = ["default", "alphabetical", "country"]
+    @State private var sort = "default"
+    @State private var showingSort = false
+    
     var body: some View {
         NavigationView {
             List(filteredResorts) { resort in
@@ -61,22 +65,68 @@ struct ContentView: View {
             }
             .navigationTitle("Resorts")
             .searchable(text: $searchText, prompt: "Search Resort")
+            .toolbar {
+                Button {
+                    showingSort = true
+                } label: {
+                    Image(systemName: "line.horizontal.3")
+                }
+            }
+            .sheet(isPresented: $showingSort) {
+                NavigationView {
+                    Form {
+                        Picker("Select Sort", selection: $sort) {
+                            ForEach(sorts, id: \.self) {
+                                Text($0)
+                            }
+                        }.pickerStyle(.wheel)
+                    }
+                    .navigationTitle("Sort Resorts")
+                    
+                }
+            }
             
             //for secondary view on larger screens
             WelcomeView()
+            
         }
         //created modifier to make pro max layout consistent
         //.phoneOnlyNavigationView()
         .environmentObject(favorites)
+        
     }
     
     var filteredResorts: [Resort] {
         if searchText.isEmpty {
-            return resorts
+            switch sort {
+            case "alphabetical":
+                return resorts.sorted(by: alphabeticalSort)
+            case "country":
+                return resorts.sorted(by: countrySort)
+            default:
+                return resorts
+            }
         } else {
-            return resorts.filter { $0.name.localizedCaseInsensitiveContains(searchText)
+            switch sort {
+            case "alphabetical":
+                return resorts.filter { $0.name.localizedCaseInsensitiveContains(searchText)
+                }.sorted(by: alphabeticalSort)
+            case "country":
+                return resorts.filter { $0.name.localizedCaseInsensitiveContains(searchText)
+                }.sorted(by: countrySort)
+            default:
+                return resorts.filter { $0.name.localizedCaseInsensitiveContains(searchText)
+                }
             }
         }
+    }
+    
+    func alphabeticalSort(lhs: Resort, rhs: Resort) -> Bool {
+        return lhs.name.lowercased() < rhs.name.lowercased()
+    }
+    
+    func countrySort(lhs: Resort, rhs: Resort) -> Bool {
+        return lhs.country.lowercased() < rhs.country.lowercased()
     }
 }
 
